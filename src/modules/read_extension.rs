@@ -6,7 +6,6 @@ use std::path::PathBuf;
 pub enum FileType {
     Zip,
     TarGz,
-    Unknown,
 }
 
 pub fn read_file_extension(filepath: &PathBuf) -> io::Result<FileType> {
@@ -23,6 +22,6 @@ fn extension_list(header: [u8; 4]) -> FileType {
     match header {
         [80, 75, 3, 4] => FileType::Zip,
         [31, 139, 8, 0] => FileType::TarGz,
-        _ => FileType::Unknown,
+        _ => panic!("Unknown FileType"),
     }
 }
