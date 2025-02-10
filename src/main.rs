@@ -10,5 +10,5 @@ struct Cli {
 
 fn main() {
     let args = Cli::parse();
-    dbg!(read_extension::read_file_extension(&args.path));
+    let extension = read_extension::read_file_extension(&args.path).unwrap();
 }
