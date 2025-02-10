@@ -15,6 +15,8 @@ fn main() {
         FileType::Zip => {
             modules::zip::decompress(args.path).unwrap_or_else(|error| println!("{:?}", error))
         }
-        FileType::TarGz => (),
+        FileType::TarGz => {
+            modules::tar::gz::extract(args.path).unwrap_or_else(|error| panic!("{}", error))
+        }
     }
 }
