@@ -70,18 +70,6 @@ xip <path> [OPTIONS]
     xip backup.tar.gz directory1 directory2
     ```
 
-## Installation
-
-To install `xip`, you will need to have Rust and Cargo installed on your system. You can install Rust from [https://www.rust-lang.org/tools/install](https://www.google.com/url?sa=E&source=gmail&q=https://www.google.com/url?sa=E%26source=gmail%26q=https://www.rust-lang.org/tools/install).
-
-Once Rust is installed, you can build and install `xip` using Cargo:
-
-```bash
-cargo install --path .
-```
-
-Navigate to the root directory of the `xip` project in your terminal and run the command above. This will build the executable and place it in your Cargo bin directory (usually `~/.cargo/bin`). Ensure this directory is in your system's `PATH` environment variable to run `xip` from anywhere in your terminal.
-
 ## Work in Progress & Limitations
 
   * **Tar.gz Archiving for Files:**  Currently, archiving using `tar.gz` only works correctly when archiving directories. Archiving individual files or a mix of files and directories into a `.tar.gz` archive is not yet functioning as expected and will be addressed in future updates.
