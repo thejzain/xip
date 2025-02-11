@@ -1,16 +1,16 @@
 use std::fs;
 use std::fs::File;
 use std::io;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use zip::ZipArchive;
 
-pub fn decompress(zip_path: PathBuf) -> zip::result::ZipResult<()> {
-    let extract_dir = Path::new(".");
+pub fn extract(zip_path: PathBuf, to_directory: Option<PathBuf>) -> zip::result::ZipResult<()> {
+    let extract_dir = to_directory.unwrap_or(PathBuf::from("."));
 
     let file = File::open(zip_path)?;
     let mut archive = ZipArchive::new(file)?;
 
-    fs::create_dir_all(extract_dir)?;
+    fs::create_dir_all(&extract_dir)?;
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
