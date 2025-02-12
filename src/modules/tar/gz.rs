@@ -21,9 +21,9 @@ pub fn archive(tar_create: PathBuf, files: Vec<PathBuf>) -> Result<(), std::io::
     let mut tar = tar::Builder::new(enc);
     for file in files {
         if file.is_dir() {
-            tar.append_dir(".", file)?;
+            tar.append_dir_all(file.file_name().unwrap(), &file)?;
         } else {
-            tar.append_file(".", &mut File::open(file)?)?;
+            tar.append_file(file.file_name().unwrap(), &mut File::open(&file)?)?;
         }
     }
     tar.finish()?;
