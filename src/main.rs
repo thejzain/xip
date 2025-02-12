@@ -17,14 +17,6 @@ struct Cli {
 
 fn main() {
     let args = Cli::parse();
-    // let extension = read_extension::read_file_extension(&args.path).unwrap();
-    // match extension {
-    //     FileType::Zip => modules::zip::extract(args.path, args.directory)
-    //         .unwrap_or_else(|error| println!("{:?}", error)),
-    //     FileType::TarGz => modules::tar::gz::extract(args.path, args.directory)
-    //         .unwrap_or_else(|error| panic!("{error}")),
-    // }
-    // modules::tar::gz::archive(args.path, args.paths).unwrap_or_else(|error| panic!("{error}"));
     if let Some(directory) = &args.directory {
         let extension = read_extension::read_file_extension(&args.path).unwrap();
         match extension {
@@ -34,7 +26,20 @@ fn main() {
                 .unwrap_or_else(|error| panic!("{error}")),
         }
     } else if let Some(paths) = args.paths {
-        modules::tar::gz::archive(args.path, paths).unwrap_or_else(|error| panic!("{error}"));
+        let extension = args
+            .path
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .split(".")
+            .last()
+            .unwrap();
+        if extension == "gz" || extension == "tgz" {
+            modules::tar::gz::archive(args.path, paths).unwrap_or_else(|error| panic!("{error}"));
+        } else if extension == "zip" {
+            todo!();
+        }
     } else {
         let extension = read_extension::read_file_extension(&args.path).unwrap();
         match extension {
