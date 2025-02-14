@@ -41,15 +41,53 @@ pub fn archive(zip_path: PathBuf, files_to_compress: Vec<PathBuf>) -> zip::resul
         .compression_method(zip::CompressionMethod::Deflated)
         .unix_permissions(0o755);
 
+    let mut directories: Vec<PathBuf> = Vec::new();
+
     for file_path in &files_to_compress {
-        let file = File::open(file_path)?;
-        let file_name = file_path.file_name().unwrap().to_str().unwrap();
+        if file_path.is_file() {
+            let file = File::open(file_path)?;
+            let file_name = file_path.file_name().unwrap().to_str().unwrap();
 
-        zip.start_file(file_name, options)?;
-        let mut buffer = Vec::new();
-        io::copy(&mut file.take(u64::MAX), &mut buffer)?;
+            zip.start_file(file_name, options)?;
+            let mut buffer = Vec::new();
+            io::copy(&mut file.take(u64::MAX), &mut buffer)?;
 
-        zip.write_all(&buffer)?;
+            zip.write_all(&buffer)?;
+        } else if file_path.is_dir() {
+            directories.push(file_path.clone());
+        }
+        while !directories.is_empty() {
+            match fs::read_dir(directories.first().unwrap()) {
+                Ok(entries) => {
+                    for entry in entries {
+                        let entry = entry.unwrap();
+                        if entry.path().is_dir() {
+                            directories.push(entry.path())
+                        } else if entry.path().is_file() {
+                            let entry = entry.path();
+                            let file = File::open(&entry)?;
+                            let file_location = entry
+                                .strip_prefix(file_path.parent().unwrap())
+                                .unwrap()
+                                .to_str()
+                                .unwrap();
+                            dbg!(&file_location);
+
+                            zip.start_file(file_location, options)?;
+                            let mut buffer = Vec::new();
+                            io::copy(&mut file.take(u64::MAX), &mut buffer)?;
+
+                            zip.write_all(&buffer)?;
+                        }
+                        println!("{:?}", entry.path());
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error getting directory : {:?}", e)
+                }
+            }
+            directories.remove(0);
+        }
     }
 
     zip.finish()?;
