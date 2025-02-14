@@ -38,7 +38,7 @@ fn main() {
         if extension == "gz" || extension == "tgz" {
             modules::tar::gz::archive(args.path, paths).unwrap_or_else(|error| panic!("{error}"));
         } else if extension == "zip" {
-            todo!();
+            modules::zip::archive(args.path, paths).unwrap_or_else(|error| panic!("{error}"));
         }
     } else {
         let extension = read_extension::read_file_extension(&args.path).unwrap();

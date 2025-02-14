@@ -1,8 +1,7 @@
-use std::fs;
 use std::fs::File;
-use std::io;
 use std::path::PathBuf;
-use zip::ZipArchive;
+use std::{fs, io, io::Read, io::Write};
+use zip::{write::FileOptions, ZipArchive, ZipWriter};
 
 pub fn extract(zip_path: PathBuf, to_directory: Option<PathBuf>) -> zip::result::ZipResult<()> {
     let extract_dir = to_directory.unwrap_or(PathBuf::from("."));
@@ -31,5 +30,31 @@ pub fn extract(zip_path: PathBuf, to_directory: Option<PathBuf>) -> zip::result:
         }
     }
     println!("Extracted files to {} success", extract_dir.display());
+    Ok(())
+}
+
+pub fn archive(zip_path: PathBuf, files_to_compress: Vec<PathBuf>) -> zip::result::ZipResult<()> {
+    let zip_file = File::create(&zip_path)?;
+    let mut zip = ZipWriter::new(zip_file);
+
+    let options: FileOptions<'_, ()> = FileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated)
+        .unix_permissions(0o755);
+
+    for file_path in &files_to_compress {
+        let file = File::open(file_path)?;
+        let file_name = file_path.file_name().unwrap().to_str().unwrap();
+
+        zip.start_file(file_name, options)?;
+        let mut buffer = Vec::new();
+        io::copy(&mut file.take(u64::MAX), &mut buffer)?;
+
+        zip.write_all(&buffer)?;
+    }
+
+    zip.finish()?;
+
+    println!("success");
+
     Ok(())
 }
