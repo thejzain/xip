@@ -14,8 +14,8 @@ xip is a command-line tool written in Rust designed to be an easy-to-use file ar
   * **Archiving:**
 
       * ✅  Creates `.tar.gz` archives from directories.
-      * 🚧  Archiving of individual files into `.tar.gz` is **currently not working as expected** and needs to be fixed.
-      * ❌  Archiving to `.zip` format is **not yet implemented**.
+      * 🚧  Archiving of individual files into `.tar.gz` is working.
+      * ❌  Archiving to `.zip` format .
 
 ## Usage
 
@@ -72,8 +72,6 @@ xip <path> [OPTIONS]
 
 ## Work in Progress & Limitations
 
-  * **Tar.gz Archiving for Files:**  Currently, archiving using `tar.gz` only works correctly when archiving directories. Archiving individual files or a mix of files and directories into a `.tar.gz` archive is not yet functioning as expected and will be addressed in future updates.
-  * **Zip Archiving:** Archiving to `.zip` format is not implemented in this version.
   * **Error Handling:** Error handling is basic and will be improved for more informative messages.
   * **Format Support:**  Currently, only `.zip` and `.tar.gz` are supported. More archive formats may be added in the future.
 ``
